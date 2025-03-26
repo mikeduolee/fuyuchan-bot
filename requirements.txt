@@ -1,1 +1,4 @@
-flask\ngunicorn\nline-bot-sdk\napscheduler
+flask
+gunicorn
+line-bot-sdk
+apscheduler
