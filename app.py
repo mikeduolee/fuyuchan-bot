@@ -39,18 +39,18 @@ def handle_message(event):
         is_reversed = random.choice([True, False])
 
         if is_reversed:
-            image_url = rune["image_reversed"]
+            #image_url = rune["image_reversed"]
             meaning = rune["meaning_reversed"]
             guidance = rune["guidance_reversed"]
             position = "逆位"
         else:
-            image_url = rune["image_upright"]
+            #image_url = rune["image_upright"]
             meaning = rune["meaning_upright"]
             guidance = rune["guidance_upright"]
             position = "正位"
 
         messages = [
-            ImageSendMessage(original_content_url=image_url, preview_image_url=image_url),
+            #ImageSendMessage(original_content_url=image_url, preview_image_url=image_url),
             TextSendMessage(text=f"🔮 盧恩符文：{rune['name']}（{position}）\n\n意義：{meaning}"),
             TextSendMessage(text=f"✨ 指引語：{guidance}")
         ]
