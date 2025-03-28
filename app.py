@@ -34,7 +34,7 @@ def webhook():
 def handle_message(event):
     user_message = event.message.text.strip()
 
-    if user_message in ["抽", "抽盧恩", "抽一張", "抽一張盧恩"]:
+    if user_message in ["骰", "骰盧恩", "骰一顆", "骰三顆盧恩"]:
         rune = runes_df.sample(1).iloc[0]
         is_reversed = random.choice([True, False])
 
@@ -56,10 +56,10 @@ def handle_message(event):
         ]
         line_bot_api.reply_message(event.reply_token, messages)
 
-    elif user_message in ["抽三張", "三張盧恩", "三張"]:
+    elif user_message in ["骰三顆", "三顆盧恩", "三顆"]:
         runes = runes_df.sample(3).reset_index(drop=True)
         positions = ["過去", "現在", "未來"]
-        result_text = "🔮 三張盧恩牌解讀：\n\n"
+        result_text = "🔮 三顆盧牌符文解讀：\n\n"
 
         for i in range(3):
             rune = runes.iloc[i]
@@ -80,7 +80,7 @@ def handle_message(event):
     else:
         line_bot_api.reply_message(
             event.reply_token,
-            TextSendMessage(text="感謝您的訊息！\n很抱歉，本帳號無法回覆用戶的訊息。\n敬請期待我們下次發送的內容喔 😊")
+            TextSendMessage(text="使用方式不對喔~\n請輸入"骰盧恩", "骰一顆" 或 "骰三顆盧恩"\n請再重新輸入一次 😊")
         )
 
 if __name__ == "__main__":
