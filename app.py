@@ -13,9 +13,10 @@ line_bot_api = LineBotApi(os.getenv("LINE_CHANNEL_ACCESS_TOKEN"))
 handler = WebhookHandler(os.getenv("LINE_CHANNEL_SECRET"))
 
 # 載入盧恩資料
-with open("fuyu_rune_data_v7.json", "r", encoding="utf-8") as f:
-    rune_data = json.load(f)
+import pandas as pd
 
+runes_df = pd.read_csv("runes_data_v7.csv", encoding="utf-8")
+# 以下 json 讀取已移除：
 def draw_rune():
     rune_key = random.choice(list(rune_data.keys()))
     return rune_data[rune_key]
