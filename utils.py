@@ -20,6 +20,18 @@ def get_three_runes():
         result += f"{labels[i]}：\n" + format_rune_message(samples.iloc[i]) + "\n\n"
     return result.strip()
 
+def get_five_runes():
+    samples = df.sample(5).reset_index(drop=True)
+    positions = ["🌑 根本問題", "🌱 潛在能量", "🌬 阻礙因素", "🔥 助力或轉機", "🌈 結果與建議"]
+    result = ""
+    for i in range(5):
+        row = samples.iloc[i]
+        result += f"{positions[i]}：\n"
+        result += f"符文：{row['符文名稱']}（{row['正逆位']}）\n"
+        result += f"關鍵字：{row['關鍵字']}\n\n"
+        result += f"{row['心靈指引']}\n{row['行動建議']}\n\n"
+    return result.strip()
+
 def get_learning_rune():
     row = df.sample(1).iloc[0]
     return f"📘 每日練習\n\n符文：{row['符文名稱']}（{row['正逆位']}）\n關鍵字：{row['關鍵字']}\n\n{row['解釋語句']}"

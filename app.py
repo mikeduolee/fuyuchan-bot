@@ -5,13 +5,21 @@ from linebot.models import MessageEvent, TextMessage, TextSendMessage
 from dotenv import load_dotenv
 import os
 import random
-from utils import get_daily_rune, get_three_runes, get_learning_rune, add_user_if_new
+from utils import (
+    get_daily_rune,
+    get_three_runes,
+    get_five_runes,
+    get_learning_rune,
+    add_user_if_new
+)
 
 load_dotenv()
 app = Flask(__name__)
 
 line_bot_api = LineBotApi(os.getenv("CHANNEL_ACCESS_TOKEN"))
 handler = WebhookHandler(os.getenv("CHANNEL_SECRET"))
+
+pending_questions = {}
 
 def get_question_intro(user_message):
     intros = [
@@ -20,7 +28,7 @@ def get_question_intro(user_message):
         "🔮 符語娘悄悄說：\n\n這是你心中正在醞釀的問題吧？\n\n你問的是："
     ]
     intro = random.choice(intros)
-    return f"{intro}「{user_message}」\n\n如果你準備好了～請對我說「抽符文」，我就會替你揭開今天的符文語言🪄"
+    return f"{intro}「{user_message}」\n\n你想讓我用幾枚符文替你占卜呢？請輸入：1、3 或 5 🪄"
 
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -38,13 +46,33 @@ def handle_message(event):
     add_user_if_new(user_id)
     msg = event.message.text.strip()
 
-    if "三符文" in msg:
+    global pending_questions
+
+    if user_id in pending_questions:
+        if msg == "1":
+            reply = get_daily_rune()
+            del pending_questions[user_id]
+        elif msg == "3":
+            reply = get_three_runes()
+            del pending_questions[user_id]
+        elif msg == "5":
+            reply = get_five_runes()
+            del pending_questions[user_id]
+        else:
+            reply = "🪄 請輸入「1」、「3」或「5」，我就會為你進行相應的符文占卜哦～"
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply))
+        return
+
+    if "五符文" in msg:
+        reply = get_five_runes()
+    elif "三符文" in msg:
         reply = get_three_runes()
     elif "每日練習" in msg:
         reply = get_learning_rune()
     elif "抽符文" in msg or "占卜" in msg:
         reply = get_daily_rune()
     elif msg.startswith("問題："):
+        pending_questions[user_id] = msg
         reply = get_question_intro(msg)
     else:
         reply = (
@@ -52,8 +80,9 @@ def handle_message(event):
             "你好呀，我是符語娘，一位與盧恩符文共鳴的小靈語師🌙\n"
             "我每天會替你抽出一枚古老符文，傳遞宇宙的訊息～\n\n"
             "你可以對我說：\n"
-            "✨ 抽符文｜📜 三符文占卜｜🧘‍♀️ 每日練習\n\n"
-            "🪄 或是輸入你心中的問題（請以「問題：」開頭），我會傾聽，再等你說出「抽符文」，替你解開符文的低語～\n"
+            "✨ 抽符文｜📜 三符文占卜｜🌟 五符文占卜｜🧘‍♀️ 每日練習\n\n"
+            "🪄 或是輸入你心中的問題（請以「問題：」開頭），我會傾聽，並請你選擇要使用 1、3 或 5 枚符文占卜，\n"
+            "幫你解讀這份訊息的深度與多層意義～\n"
         )
 
     line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply))
