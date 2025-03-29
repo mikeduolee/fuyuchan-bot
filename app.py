@@ -61,7 +61,14 @@ def handle_message(event):
         line_bot_api.reply_message(event.reply_token, messages)
 
     else:
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(text="✨輸入『骰盧恩』或『骰三顆盧恩』試試看吧！"))
+        line_bot_api.reply_message(event.reply_token, TextSendMessageTextSendMessage(text="""🔮 符語娘悄悄說：
+
+你可以這樣跟我互動：
+✨ 「抽符文」—— 抽出今日專屬符文與指引  
+📜 「三符文占卜」—— 展開一場更完整的占卜解析  
+
+在心中想好問題，再悄悄對我說一聲，我就會為你揭開符文的語言之門🪄""")
+        )
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
