@@ -1,7 +1,7 @@
 from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
-from linebot.models import MessageEvent, TextMessage, TextSendMessage
+from linebot.models import MessageEvent, TextMessage, TextSendMessage, ImageSendMessage
 import os
 import json
 import random
@@ -42,21 +42,30 @@ def handle_message(event):
 
     if "骰盧恩" in msg or "抽一張" in msg:
         rune = draw_rune()
-        reply_text = f"🔮 今日符文：{rune['name']}（{rune['position']}）\n\n{rune['meaning']}\n\n✨ 指引語：{rune['guidance']}"
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply_text))
+        messages = [
+            TextSendMessage(text=rune["description"]),
+            ImageSendMessage(
+                original_content_url=rune["image"],
+                preview_image_url=rune["image"]
+            )
+        ]
+        line_bot_api.reply_message(event.reply_token, messages)
 
     elif "骰三顆" in msg or "抽三張" in msg:
         runes = draw_three_runes()
-        messages = []
+        descriptions = []
         for position, rune in runes:
-            text = f"🔮【{position}】{rune['name']}（{rune['position']}）\n\n{rune['meaning']}\n\n✨ 指引語：{rune['guidance']}"
-            messages.append(TextSendMessage(text=text[:4800]))  # 安全留 buffer
+            desc = f"【{position}】\n" + rune["description"]
+            descriptions.append(desc)
+        full_text = "\n\n".join(descriptions)
+        images = [ImageSendMessage(original_content_url=r["image"], preview_image_url=r["image"]) for _, r in runes]
+        messages = [TextSendMessage(text=full_text)] + images
         line_bot_api.reply_message(event.reply_token, messages)
 
     else:
         line_bot_api.reply_message(
             event.reply_token,
-            TextSendMessage(text="使用方式不對喔～請輸入：\n🔮『骰盧恩』 or 『骰三張』來獲得今日符語娘的祝福 ✨")
+            TextSendMessage(text="使用方式不對喔～請輸入：\n🔮『骰盧恩』 or 『抽三張』來獲得今日符語娘的祝福 ✨")
         )
 
 if __name__ == "__main__":
