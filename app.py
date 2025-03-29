@@ -80,8 +80,14 @@ def handle_message(event):
     else:
         line_bot_api.reply_message(
             event.reply_token,
-            TextSendMessage(text="使用方式不對喔~\n\n使用方式：\n請先在心中想好要問的問題，\n再輸入'骰盧恩' , '骰一顆' 或 '骰三顆盧恩'，\n\n請重新輸入一次 😊")
-        )
+            TextSendMessage(text="""🔮 符語娘悄悄說：
+
+你可以這樣跟我互動：
+✨ 「抽符文」—— 抽出今日專屬符文與指引  
+📜 「三符文占卜」—— 展開一場更完整的占卜解析  
+🧘‍♀️ 「每日練習」—— 學習一點點符文知識，與它們建立連結  
+
+在心中想好問題，再悄悄對我說一聲，我就會為你揭開符文的語言之門🪄""")
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
