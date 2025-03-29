@@ -1,3 +1,5 @@
 flask
-line-bot-sdk
 gunicorn
+line-bot-sdk==2.4.1
+apscheduler
+pandas
