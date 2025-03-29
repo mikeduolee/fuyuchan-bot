@@ -1,32 +1,30 @@
+
+import os
+import random
+import json
 from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
-from linebot.models import MessageEvent, TextMessage, TextSendMessage, ImageSendMessage
-import os
-import json
-import random
+from linebot.models import MessageEvent, TextMessage, TextSendMessage
 
 app = Flask(__name__)
 
-# 設定 LINE BOT API 金鑰與 handler secret
-line_bot_api = LineBotApi(os.getenv("LINE_CHANNEL_ACCESS_TOKEN"))
-handler = WebhookHandler(os.getenv("LINE_CHANNEL_SECRET"))
+line_bot_api = LineBotApi(os.getenv('CHANNEL_ACCESS_TOKEN'))
+handler = WebhookHandler(os.getenv('CHANNEL_SECRET'))
 
-# 載入盧恩資料
-with open("fuyu_rune_data_v7.json", "r", encoding="utf-8") as f:
-    rune_data = json.load(f)
+with open('runes.json', encoding='utf-8') as f:
+    runes = json.load(f)
 
-def draw_rune():
-    rune_key = random.choice(list(rune_data.keys()))
-    return rune_data[rune_key]
+def get_random_rune():
+    rune = random.choice(runes)
+    reversed_flag = random.random() < 0.5
+    position = "逆位" if reversed_flag else "正位"
+    meaning = rune["reversed"] if reversed_flag else rune["upright"]
+    return rune["symbol"], rune["name"], position, meaning
 
-def draw_three_runes():
-    keys = random.sample(list(rune_data.keys()), 3)
-    return [(["過去", "現在", "未來"][i], rune_data[k]) for i, k in enumerate(keys)]
-
-@app.route("/webhook", methods=["POST"])
-def callback():
-    signature = request.headers.get("X-Line-Signature")
+@app.route("/webhook", methods=['POST'])
+def webhook():
+    signature = request.headers['X-Line-Signature']
     body = request.get_data(as_text=True)
 
     try:
@@ -34,39 +32,30 @@ def callback():
     except InvalidSignatureError:
         abort(400)
 
-    return "OK"
+    return 'OK'
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    msg = event.message.text.strip()
+    text = event.message.text
 
-    if "骰盧恩" in msg or "抽一張" in msg:
-        rune = draw_rune()
-        messages = [
-            TextSendMessage(text=rune["description"]),
-            ImageSendMessage(
-                original_content_url=rune["image"],
-                preview_image_url=rune["image"]
-            )
-        ]
-        line_bot_api.reply_message(event.reply_token, messages)
-
-    elif "骰三顆" in msg or "抽三張" in msg:
-        runes = draw_three_runes()
-        descriptions = []
-        for position, rune in runes:
-            desc = f"【{position}】\n" + rune["description"]
-            descriptions.append(desc)
-        full_text = "\n\n".join(descriptions)
-        images = [ImageSendMessage(original_content_url=r["image"], preview_image_url=r["image"]) for _, r in runes]
-        messages = [TextSendMessage(text=full_text)] + images
-        line_bot_api.reply_message(event.reply_token, messages)
-
+    if "抽一張" in text:
+        symbol, name, position, meaning = get_random_rune()
+        reply = f"🙋‍♀️你抽到了：{symbol}（{name}）\n{position}｜💡 心靈指引：{meaning['spiritual']}\n🚀 行動建議：{meaning['action']}"
+    elif "抽三張" in text:
+        reply = ""
+        for i in range(3):
+            symbol, name, position, meaning = get_random_rune()
+            reply += f"第{i+1}張：{symbol}（{name}）\n{position}｜💡{meaning['spiritual']}\n🚀{meaning['action']}\n\n"
+    elif "感情" in text:
+        symbol, name, position, meaning = get_random_rune()
+        reply = f"💖 感情牌抽出：{symbol}（{name}）\n{position}｜💗 情感啟示：{meaning['love']}\n📌 行動提醒：{meaning['loveAction']}"
     else:
-        line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text="使用方式不對喔～請輸入：\n🔮『骰盧恩』 or 『抽三張』來獲得今日符語娘的祝福 ✨")
-        )
+        reply = "輸入「抽一張」「抽三張」或「感情抽牌」來試試看吧～ ✨"
+
+    line_bot_api.reply_message(
+        event.reply_token,
+        TextSendMessage(text=reply)
+    )
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run()
