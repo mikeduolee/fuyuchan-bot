@@ -10,7 +10,8 @@ from utils import (
     get_three_runes,
     get_five_runes,
     get_learning_rune,
-    add_user_if_new
+    add_user_if_new,
+    search_rune
 )
 
 load_dotenv()
@@ -29,10 +30,11 @@ def get_question_intro(user_message):
     ]
     intro = random.choice(intros)
     return f"{intro}「{user_message}」\n\n你想讓我用幾枚符文替你占卜呢？請輸入：1、3 或 5 🪄"
+
 @app.route("/ping", methods=["GET"])
 def ping():
     return "I'm awake!", 200
-    
+
 @app.route("/callback", methods=['POST'])
 def callback():
     signature = request.headers['X-Line-Signature']
@@ -48,13 +50,13 @@ def handle_message(event):
     user_id = event.source.user_id
     add_user_if_new(user_id)
     msg = event.message.text.strip()
+    reply = ""  # 預設回應內容
 
     global pending_questions
 
     if user_id in pending_questions:
         if msg == "1":
             reply = get_daily_rune()
-        # 已整合無逆位符文自動轉正位處理
             del pending_questions[user_id]
         elif msg == "3":
             reply = get_three_runes()
@@ -62,11 +64,8 @@ def handle_message(event):
         elif msg == "5":
             reply = get_five_runes()
             del pending_questions[user_id]
-        
-    
-        return
 
-    if "五符文" in msg:
+    elif "五符文" in msg:
         reply = get_five_runes()
     elif "三符文" in msg:
         reply = get_three_runes()
@@ -74,31 +73,27 @@ def handle_message(event):
         reply = get_learning_rune()
     elif "抽符文" in msg or "占卜" in msg:
         reply = get_daily_rune()
-        # 已整合無逆位符文自動轉正位處理
     elif msg.startswith("問題："):
         pending_questions[user_id] = msg
         reply = get_question_intro(msg)
-    
     elif msg.startswith("查符文"):
         keyword = msg.replace("查符文", "").strip()
         if keyword:
-            from utils import search_rune
-            result = search_rune(keyword)
-            line_bot_api.reply_message(event.reply_token, TextSendMessage(text=result))
+            reply = search_rune(keyword)
         else:
-            line_bot_api.reply_message(event.reply_token, TextSendMessage(text="請輸入要查詢的符文名稱，例如：查符文 Fehu 或 查符文 索維羅"))
-
+            reply = "請輸入要查詢的符文名稱，例如：查符文 Fehu 或 查符文 索維羅"
     else:
         reply = (
-    "🔮 符語娘悄悄說：\n\n"
-    "你好呀，我是符語娘，一位與盧恩符文共鳴的小靈語師🌙\n"
-    "我每天會替你抽出一枚古老符文，傳遞宇宙的訊息～\n\n"
-    "你可以對我說：\n"
-    "✨ 抽符文｜📜 三符文占卜｜🌟 五符文占卜｜🧘‍♀️ 每日練習\n\n"
-    "🪄 或是輸入你心中的問題（請以「問題：」開頭），我會傾聽，並請你選擇要使用 1、3 或 5 枚符文占卜，\n"
-    "幫你解讀這份訊息的深度與多層意義～\n\n"
-    "🔎 想查詢特定符文的含義嗎？輸入「查符文 + 名稱」，例如「查符文 Gebo」、「查符文 貝爾卡諾 正位」即可快速獲得解讀！"
-)
+            "🔮 符語娘悄悄說：\n\n"
+            "你好呀，我是符語娘，一位與盧恩符文共鳴的小靈語師🌙\n"
+            "我每天會替你抽出一枚古老符文，傳遞宇宙的訊息～\n\n"
+            "你可以對我說：\n"
+            "✨ 抽符文｜📜 三符文占卜｜🌟 五符文占卜｜🧘‍♀️ 每日練習\n\n"
+            "🪄 或是輸入你心中的問題（請以「問題：」開頭），我會傾聽，並請你選擇要使用 1、3 或 5 枚符文占卜，\n"
+            "幫你解讀這份訊息的深度與多層意義～\n\n"
+            "🔎 想查詢特定符文的含義嗎？輸入「查符文 + 名稱」，例如「查符文 Gebo」、「查符文 貝爾卡諾 正位」即可快速獲得解讀！"
+        )
+
     line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply))
 
 if __name__ == "__main__":
