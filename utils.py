@@ -2,6 +2,8 @@
 import random
 import pandas as pd
 
+USER_CSV_PATH = "user_data.csv"
+
 # 加入無逆位符文處理
 def enforce_valid_rune_orientation(rune_name, position):
     no_reversed_runes = ["Gebo", "Isa", "Sowilo", "Jera", "Eihwaz", "Ingwaz"]
