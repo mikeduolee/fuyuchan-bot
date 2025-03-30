@@ -15,7 +15,7 @@ def enforce_valid_rune_orientation(rune_name, position):
 
 # 讀取資料庫（以升級清理後版本為例）
 def load_rune_data():
-    df = pd.read_csv("fuyu_rune_readings_final_upgraded_cleaned_final_noted.csv")
+    df = pd.read_csv("fuyu_rune_readings_final_upgraded.csv")
     return df
 
 # 單抽符文
