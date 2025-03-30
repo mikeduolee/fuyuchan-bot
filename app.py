@@ -54,6 +54,7 @@ def handle_message(event):
     if user_id in pending_questions:
         if msg == "1":
             reply = get_daily_rune()
+        # 已整合無逆位符文自動轉正位處理
             del pending_questions[user_id]
         elif msg == "3":
             reply = get_three_runes()
@@ -74,6 +75,7 @@ def handle_message(event):
         reply = get_learning_rune()
     elif "抽符文" in msg or "占卜" in msg:
         reply = get_daily_rune()
+        # 已整合無逆位符文自動轉正位處理
     elif msg.startswith("問題："):
         pending_questions[user_id] = msg
         reply = get_question_intro(msg)
