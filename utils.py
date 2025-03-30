@@ -41,36 +41,32 @@ def get_daily_rune():
 
 # 搜尋符文內容：可接受中文或英文查詢
 def search_rune(keyword):
-    df = load_rune_data()
     keyword = keyword.strip()
 
-    # 若使用者未輸入內容：顯示可查詢符文列表
-    if not keyword:
+    if keyword == "":
         all_runes = [
             "Fehu", "Uruz", "Thurisaz", "Ansuz", "Raidho", "Kenaz", "Gebo", "Wunjo",
             "Hagalaz", "Nauthiz", "Isa", "Jera", "Eihwaz", "Perthro", "Algiz", "Sowilo",
             "Tiwaz", "Berkano", "Ehwaz", "Mannaz", "Laguz", "Ingwaz", "Dagaz", "Othala"
         ]
         rune_list = "｜".join(all_runes)
-        return f"📜 可查詢的符文如下：\n{rune_list}\n\n請輸入：查符文 + 名稱，例如「查符文 Gebo」～"
+        return (
+            "📜 可查詢的符文如下：\n"
+            f"{rune_list}\n\n"
+            "請輸入：查符文 + 名稱，例如「查符文 Gebo」，也可加上 正位 或 逆位 喔～"
+        )
 
-    # 模糊搜尋：符文英文或中文
+    df = load_rune_data()
     results = df[df["符文名稱"].str.contains(keyword, case=False, na=False)]
 
     if results.empty:
-        return f"🔍 沒有找到與「{keyword}」相關的符文喔～請檢查拼字或輸入英文名稱，例如：Gebo、Berkano 等～"
+        return f"🔍 沒有找到與「{keyword}」相關的符文喔～試著檢查拼字或換個詞搜尋吧。"
 
-    # 自動顯示正逆位（或只有正位）
-    reply = f"🔎 查詢結果：{keyword}\n\n"
-    grouped = results.groupby("符文名稱")
-
-    for name, group in grouped:
-        for _, row in group.iterrows():
-            pos = row["正逆位"] if pd.notna(row["正逆位"]) and row["正逆位"] else "（無正逆位）"
-            reply += f"🌿 {name} {pos}\n"
-            reply += f"{row['解釋語句']}\n"
-            reply += f"✨ 心靈指引：{row['心靈指引']}\n"
-            reply += f"📜 行動建議：{row['行動建議']}\n\n"
+    reply = f"🔎 搜尋結果：{keyword}\n\n"
+    for _, row in results.iterrows():
+        pos = row["正逆位"] if pd.notna(row["正逆位"]) and row["正逆位"] else "（無正逆位）"
+        reply += f"🌿 {row['符文名稱']} {pos}\n"
+        reply += f"{row['解釋語句']}\n✨ {row['心靈指引']}\n📜 {row['行動建議']}\n\n"
 
     return reply.strip()
 
