@@ -97,3 +97,13 @@ def get_learning_rune():
         f"📜 行動建議：{row['行動建議']}\n"
     )
     return reply.strip()
+    
+def add_user_if_new(user_id):
+    if os.path.exists(USER_CSV_PATH):
+        df = pd.read_csv(USER_CSV_PATH)
+    else:
+        df = pd.DataFrame(columns=["user_id"])
+
+    if user_id not in df["user_id"].values:
+        df = df.append({"user_id": user_id}, ignore_index=True)
+        df.to_csv(USER_CSV_PATH, index=False)
