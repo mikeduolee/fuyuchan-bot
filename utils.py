@@ -39,12 +39,25 @@ def get_five_runes():
         result += f"{row['心靈指引']}\n{row['行動建議']}\n\n"
     return result.strip()
 
-# ✅ 每日練習文字回覆版
+# ✅ 升級版每日練習（內含所有指引）
 def get_learning_rune():
     row = df.sample(1).iloc[0]
-    return f"📘 每日練習\n\n符文：{row['符文名稱']}（{row['正逆位']}）\n關鍵字：{row['關鍵字']}\n\n{row['解釋語句']}"
+    rune = row["符文名稱"]
+    position = row["正逆位"]
+    keyword = row["關鍵字"]
+    intro = row["解釋語句"]
+    guidance = row["心靈指引"]
+    action = row["行動建議"]
 
-# ✅ 符文訊息格式化
+    return (
+        f"🧘‍♀️ 符語娘每日練習：\n\n"
+        f"✨ 今日符文：{rune}（{position}）\n🔑 關鍵字：{keyword}\n\n"
+        f"📖 指引語：{intro}\n\n"
+        f"🌙 心靈引導：\n{guidance}\n\n"
+        f"📌 行動建議：\n{action}"
+    )
+
+# ✅ 格式化符文訊息
 def format_rune_message(row):
     return (
         "🔮 符語娘悄悄說：\n\n"
@@ -53,7 +66,7 @@ def format_rune_message(row):
         f"{row['心靈指引']}\n{row['行動建議']}"
     )
 
-# ✅ 註冊使用者
+# ✅ 新增使用者
 def add_user_if_new(user_id):
     users = load_all_users()
     if user_id not in users:
@@ -61,14 +74,14 @@ def add_user_if_new(user_id):
         with open(USER_PATH, "w") as f:
             json.dump(users, f)
 
-# ✅ 載入使用者清單
+# ✅ 載入所有使用者
 def load_all_users():
     if not os.path.exists(USER_PATH):
         return []
     with open(USER_PATH, "r") as f:
         return json.load(f)
 
-# ✅ 自動推播每日練習
+# ✅ 每日推播
 def push_daily_practice_fuyu():
     line_bot_api = LineBotApi(os.getenv("CHANNEL_ACCESS_TOKEN"))
     users = load_all_users()
