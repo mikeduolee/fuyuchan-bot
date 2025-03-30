@@ -63,18 +63,7 @@ def handle_message(event):
             reply = get_five_runes()
             del pending_questions[user_id]
         
-    elif user_text.startswith("查符文"):
-        keyword = user_text.replace("查符文", "").strip()
-        if keyword:
-            from utils import search_rune
-            result = search_rune(keyword)
-            line_bot_api.reply_message(event.reply_token, TextSendMessage(text=result))
-        else:
-            line_bot_api.reply_message(event.reply_token, TextSendMessage(text="請輸入要查詢的符文名稱，例如：查符文 Fehu 或 查符文 索維羅"))
-
-    else:
-            reply = "🪄 請輸入「1」、「3」或「5」，我就會為你進行相應的符文占卜哦～"
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply))
+    
         return
 
     if "五符文" in msg:
@@ -90,8 +79,8 @@ def handle_message(event):
         pending_questions[user_id] = msg
         reply = get_question_intro(msg)
     
-    elif user_text.startswith("查符文"):
-        keyword = user_text.replace("查符文", "").strip()
+    elif msg.startswith("查符文"):
+        keyword = msg.replace("查符文", "").strip()
         if keyword:
             from utils import search_rune
             result = search_rune(keyword)
