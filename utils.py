@@ -62,3 +62,24 @@ def search_rune(keyword):
         reply += f"🌿 {row['符文名稱']} {pos}\n"
         reply += f"{row['解釋語句']}\n✨ {row['心靈指引']}\n📜 {row['行動建議']}\n\n"
     return reply.strip()
+
+
+def get_three_runes():
+    df = load_rune_data()
+    selected = df.sample(3).reset_index(drop=True)
+    reply = "📜 三符文占卜結果：\n\n"
+    for i, row in selected.iterrows():
+        pos = row["正逆位"] if pd.notna(row["正逆位"]) and row["正逆位"] else "（無正逆位）"
+        reply += f"🪄 第 {i+1} 枚：{row['符文名稱']} {pos}\n"
+        reply += f"{row['解釋語句']}\n✨ {row['心靈指引']}\n📜 {row['行動建議']}\n\n"
+    return reply.strip()
+
+def get_five_runes():
+    df = load_rune_data()
+    selected = df.sample(5).reset_index(drop=True)
+    reply = "🌟 五符文占卜結果：\n\n"
+    for i, row in selected.iterrows():
+        pos = row["正逆位"] if pd.notna(row["正逆位"]) and row["正逆位"] else "（無正逆位）"
+        reply += f"🪄 第 {i+1} 枚：{row['符文名稱']} {pos}\n"
+        reply += f"{row['解釋語句']}\n✨ {row['心靈指引']}\n📜 {row['行動建議']}\n\n"
+    return reply.strip()
