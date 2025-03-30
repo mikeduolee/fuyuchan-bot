@@ -39,17 +39,22 @@ def get_daily_rune():
     
     return text
 
-
 # 搜尋符文內容：可接受中文或英文查詢
 def search_rune(keyword):
-    if not keyword.strip():
+    keyword = keyword.strip()
+
+    if keyword == "":
         all_runes = [
             "Fehu", "Uruz", "Thurisaz", "Ansuz", "Raidho", "Kenaz", "Gebo", "Wunjo",
             "Hagalaz", "Nauthiz", "Isa", "Jera", "Eihwaz", "Perthro", "Algiz", "Sowilo",
             "Tiwaz", "Berkano", "Ehwaz", "Mannaz", "Laguz", "Ingwaz", "Dagaz", "Othala"
         ]
         rune_list = "｜".join(all_runes)
-        return f"📜 可查詢的符文有：\n{rune_list}\n\n請輸入：查符文 + 名稱，例如「查符文 Gebo」，也可加上 正位 或 逆位 喔～"
+        return (
+            "📜 可查詢的符文如下：\n"
+            f"{rune_list}\n\n"
+            "請輸入：查符文 + 名稱，例如「查符文 Gebo」，也可加上 正位 或 逆位 喔～"
+        )
 
     df = load_rune_data()
     results = df[df["符文名稱"].str.contains(keyword, case=False, na=False)]
@@ -62,8 +67,8 @@ def search_rune(keyword):
         pos = row["正逆位"] if pd.notna(row["正逆位"]) and row["正逆位"] else "（無正逆位）"
         reply += f"🌿 {row['符文名稱']} {pos}\n"
         reply += f"{row['解釋語句']}\n✨ {row['心靈指引']}\n📜 {row['行動建議']}\n\n"
-    return reply.strip()
 
+    return reply.strip()
 
 def get_three_runes():
     df = load_rune_data()
