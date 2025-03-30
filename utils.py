@@ -1,4 +1,3 @@
-import os
 import random
 import pandas as pd
 
@@ -101,11 +100,11 @@ def get_learning_rune():
     return reply.strip()
     
 def add_user_if_new(user_id):
-    if os.path.exists(USER_CSV_PATH):
+    try:
         df = pd.read_csv(USER_CSV_PATH)
-    else:
+    except FileNotFoundError:
         df = pd.DataFrame(columns=["user_id"])
 
     if user_id not in df["user_id"].values:
-        df = df.append({"user_id": user_id}, ignore_index=True)
+        df = pd.concat([df, pd.DataFrame([{"user_id": user_id}])], ignore_index=True)
         df.to_csv(USER_CSV_PATH, index=False)
