@@ -9,8 +9,7 @@ from utils import (
     get_daily_rune,
     get_three_runes,
     get_five_runes,
-    get_learning_rune,
-    add_user_if_new
+    get_learning_rune
 )
 
 load_dotenv()
