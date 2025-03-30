@@ -79,7 +79,7 @@ def handle_message(event):
     elif msg.startswith("查符文"):
         keyword = msg.replace("查符文", "").strip()
         if keyword:
-            reply = search_rune(keyword)
+            reply = search_rune("")
         else:
             reply = "請輸入要查詢的符文名稱，例如：查符文 Fehu 或 查符文 索維羅"
     else:
