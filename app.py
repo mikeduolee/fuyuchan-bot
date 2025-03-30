@@ -29,7 +29,10 @@ def get_question_intro(user_message):
     ]
     intro = random.choice(intros)
     return f"{intro}「{user_message}」\n\n你想讓我用幾枚符文替你占卜呢？請輸入：1、3 或 5 🪄"
-
+@app.route("/ping", methods=["GET"])
+def ping():
+    return "I'm awake!", 200
+    
 @app.route("/callback", methods=['POST'])
 def callback():
     signature = request.headers['X-Line-Signature']
