@@ -62,7 +62,17 @@ def handle_message(event):
         elif msg == "5":
             reply = get_five_runes()
             del pending_questions[user_id]
+        
+    elif user_text.startswith("查符文"):
+        keyword = user_text.replace("查符文", "").strip()
+        if keyword:
+            from utils import search_rune
+            result = search_rune(keyword)
+            line_bot_api.reply_message(event.reply_token, TextSendMessage(text=result))
         else:
+            line_bot_api.reply_message(event.reply_token, TextSendMessage(text="請輸入要查詢的符文名稱，例如：查符文 Fehu 或 查符文 索維羅"))
+
+    else:
             reply = "🪄 請輸入「1」、「3」或「5」，我就會為你進行相應的符文占卜哦～"
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply))
         return
@@ -79,15 +89,37 @@ def handle_message(event):
     elif msg.startswith("問題："):
         pending_questions[user_id] = msg
         reply = get_question_intro(msg)
+    
+    elif user_text.startswith("查符文"):
+        keyword = user_text.replace("查符文", "").strip()
+        if keyword:
+            from utils import search_rune
+            result = search_rune(keyword)
+            line_bot_api.reply_message(event.reply_token, TextSendMessage(text=result))
+        else:
+            line_bot_api.reply_message(event.reply_token, TextSendMessage(text="請輸入要查詢的符文名稱，例如：查符文 Fehu 或 查符文 索維羅"))
+
     else:
         reply = (
-            "🔮 符語娘悄悄說：\n\n"
-            "你好呀，我是符語娘，一位與盧恩符文共鳴的小靈語師🌙\n"
-            "我每天會替你抽出一枚古老符文，傳遞宇宙的訊息～\n\n"
-            "你可以對我說：\n"
-            "✨ 抽符文｜📜 三符文占卜｜🌟 五符文占卜｜🧘‍♀️ 每日練習\n\n"
-            "🪄 或是輸入你心中的問題（請以「問題：」開頭），我會傾聽，並請你選擇要使用 1、3 或 5 枚符文占卜，\n"
-            "幫你解讀這份訊息的深度與多層意義～\n"
+            "🔮 符語娘悄悄說：
+
+"
+        "你好呀，我是符語娘，一位與盧恩符文共鳴的小靈語師🌙
+"
+        "我每天會替你抽出一枚古老符文，傳遞宇宙的訊息～
+
+"
+        "你可以對我說：
+"
+        "✨ 抽符文｜📜 三符文占卜｜🌟 五符文占卜｜🧘‍♀️ 每日練習
+
+"
+        "🪄 或是輸入你心中的問題（請以「問題：」開頭），我會傾聽，並請你選擇要使用 1、3 或 5 枚符文占卜，
+"
+        "幫你解讀這份訊息的深度與多層意義～
+
+"
+        "🔎 想查詢特定符文的含義嗎？輸入「查符文 + 名稱」，例如「查符文 Gebo」、「查符文 貝爾卡諾 正位」即可快速獲得解讀！"
         )
 
     line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply))
