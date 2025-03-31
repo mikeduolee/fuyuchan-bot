@@ -78,10 +78,7 @@ def handle_message(event):
         reply = get_question_intro(msg)
     elif msg.startswith("查符文"):
         keyword = msg.replace("查符文", "").strip()
-        if not keyword:  # 更明確的條件
-            reply = search_rune("")
-        else:
-            reply = "請輸入要查詢的符文名稱，例如：查符文 Fehu 或 查符文 索維羅"
+        reply = search_rune(keyword)  # 無論有無 keyword 都交由 utils 處理
     else:
         reply = (
             "🔮 符語娘悄悄說：\n\n"
