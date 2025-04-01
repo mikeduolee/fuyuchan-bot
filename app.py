@@ -74,30 +74,33 @@ def handle_message(event):
     elif "抽符文" in msg or "占卜" in msg:
         reply = get_daily_rune()
     elif msg.startswith("問題："):
-        elif msg.startswith("查符文"):
-            keyword = msg.replace("查符文", "").strip()
-            result = search_rune(keyword)
-            if "🖼️ 圖片：" in result:
-                parts = result.split("🖼️ 圖片：")
-                description = parts[0].strip()
-                image_url = parts[1].split("\n")[0].strip()
-                extra_text = "\n".join(parts[1].split("\n")[1:]).strip()
-                line_bot_api.reply_message(
-                    event.reply_token,
-                    [
-                        TextSendMessage(text=f"{description}\n\n{extra_text}"),
-                        ImageSendMessage(
-                            original_content_url=image_url,
-                            preview_image_url=image_url
-                        )
-                    ]
-                )
-                return
-            else:
-                line_bot_api.reply_message(
-                    event.reply_token,
-                    TextSendMessage(text=result)
-                )
+        reply = get_question_intro(msg)
+    elif msg.startswith("查符文"):
+        keyword = msg.replace("查符文", "").strip()
+        result = search_rune(keyword)
+        
+        if "🖼️ 圖片：" in result:
+            parts = result.split("🖼️ 圖片：")
+            description = parts[0].strip()
+            image_url = parts[1].split("\n")[0].strip()
+            extra_text = "\n".join(parts[1].split("\n")[1:]).strip()
+            
+            line_bot_api.reply_message(
+                event.reply_token,
+                [
+                    TextSendMessage(text=f"{description}\n\n{extra_text}"),
+                    ImageSendMessage(
+                        original_content_url=image_url,
+                        preview_image_url=image_url
+                    )
+                ]
+            )
+            return
+        else:
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text=result)
+            )
         pending_questions[user_id] = msg
 
             result = search_rune(keyword)
