@@ -1,7 +1,7 @@
 from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
-from linebot.models import MessageEvent, TextMessage, TextSendMessage, ImageSendMessage
+from linebot.models import MessageEvent, TextMessage, TextSendMessage
 from dotenv import load_dotenv
 import os
 import random
@@ -74,79 +74,10 @@ def handle_message(event):
     elif "抽符文" in msg or "占卜" in msg:
         reply = get_daily_rune()
     elif msg.startswith("問題："):
+        pending_questions[user_id] = msg
         reply = get_question_intro(msg)
     elif msg.startswith("查符文"):
         keyword = msg.replace("查符文", "").strip()
-        result = search_rune(keyword)
-        
-        if "🖼️ 圖片：" in result:
-            parts = result.split("🖼️ 圖片：")
-            description = parts[0].strip()
-            image_url = parts[1].split("\n")[0].strip()
-            extra_text = "\n".join(parts[1].split("\n")[1:]).strip()
-            
-            line_bot_api.reply_message(
-                event.reply_token,
-                [
-                    TextSendMessage(text=f"{description}\n\n{extra_text}"),
-                    ImageSendMessage(
-                        original_content_url=image_url,
-                        preview_image_url=image_url
-                    )
-                ]
-            )
-            return
-        else:
-            line_bot_api.reply_message(
-                event.reply_token,
-                TextSendMessage(text=result)
-            )
-        pending_questions[user_id] = msg
-
-            result = search_rune(keyword)
-
-        if "🖼️ 圖片：" in result:
-            parts = result.split("🖼️ 圖片：")
-            description = parts[0].strip()
-            image_url = parts[1].split("")[0].strip()
-            extra_text = "".join(parts[1].split("")[1:]).strip()
-
-            line_bot_api.reply_message(
-                event.reply_token,
-                [
-                    TextSendMessage(text=f"{description}\n\n{extra_text}"),
-                    ImageSendMessage(
-                        original_content_url=image_url,
-                        preview_image_url=image_url
-                    )
-                ]
-            )
-            return
-        else:
-            reply = result
-
-        reply = get_question_intro(msg)
-                result = search_rune(keyword)
-
-        if "🖼️ 圖片：" in result:
-            parts = result.split("🖼️ 圖片：")
-            description = parts[0].strip()
-            image_url = parts[1].split("")[0].strip()
-            extra_text = "".join(parts[1].split("")[1:]).strip()
-
-            line_bot_api.reply_message(
-                event.reply_token,
-                [
-                    TextSendMessage(text=f"{description}\n\n{extra_text}"),
-                    ImageSendMessage(
-                        original_content_url=image_url,
-                        preview_image_url=image_url
-                    )
-                ]
-            )
-            return
-        else:
-            reply = result
         reply = search_rune(keyword)  # 無論有無 keyword 都交由 utils 處理
     else:
         reply = (
@@ -165,31 +96,3 @@ def handle_message(event):
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
-
-        elif msg.startswith("查符文"):
-            keyword = msg.replace("查符文", "").strip()
-            result = search_rune(keyword)
-
-            if "🖼️ 圖片：" in result:
-                parts = result.split("🖼️ 圖片：")
-                description = parts[0].strip()
-                image_url = parts[1].split("\n")[0].strip()
-                extra_text = "\n".join(parts[1].split("\n")[1:]).strip()
-
-                line_bot_api.reply_message(
-                    event.reply_token,
-                    [
-                        TextSendMessage(text=f"{description}\n\n{extra_text}"),
-                        ImageSendMessage(
-                            original_content_url=image_url,
-                            preview_image_url=image_url
-                        )
-                    ]
-                )
-                return
-            else:
-                line_bot_api.reply_message(
-                    event.reply_token,
-                    TextSendMessage(text=result)
-                )
-

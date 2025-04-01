@@ -31,13 +31,8 @@ def get_daily_rune():
         result = df[df["符文名稱"] == rune_name]  # 取正位資料
 
     row = result.iloc[0]
-    text = f"🔮 {rune_name} {position if position else ''}
-
-"
-    text += f"{row['解釋語句']}
-
-✨ {row['心靈指引']}
-📜 {row['行動建議']}"
+    text = f"🔮 {rune_name} {position if position else ''}\n\n"
+    text += f"{row['解釋語句']}\n\n✨ {row['心靈指引']}\n📜 {row['行動建議']}"
     
     if no_reverse:
         text += "\n\n⚠️ 此符文無正逆位之分，已以正位解讀。"
@@ -50,9 +45,9 @@ def search_rune(keyword):
 
     if keyword == "":
         all_runes = [
-            "Fehu ᚠ", "Uruz ᚢ", "Thurisaz ᚦ", "Ansuz ᚨ", "Raido ᚱ", "Kenaz ᚲ", "Gebo ᚷ", "Wunjo ᚹ",
-            "Hagalaz ᚺ", "Nauthiz ᚾ", "Isa ᛁ", "Jera ᛃ", "Eihwaz ᛇ", "Perthro ᛈ", "Algiz ᛉ", "Sowilo ᛋ",
-            "Tiwaz ᛏ", "Berkano ᛒ", "Ehwaz ᛖ", "Mannaz ᛗ", "Laguz ᛚ", "Ingwaz ᛜ", "Dagaz ᛞ", "Othala ᛟ"
+            "Fehu ᚠ ", "Uruz ᚢ ", "Thurisaz ᚦ ", "Ansuz ᚨ ", "Raido ᚱ ", "Kenaz ᚲ ", "Gebo ᚷ ", "Wunjo ᚹ ",
+            "Hagalaz ᚺ ", "Nauthiz ᚾ ", "Isa ᛁ ", "Jera ᛃ ", "Eihwaz ᛇ ", "Perthro ᛈ ", "Algiz ᛉ ", "Sowilo ᛋ ",
+            "Tiwaz ᛏ ", "Berkano ᛒ ", "Ehwaz ᛖ ", "Mannaz ᛗ ", "Laguz ᛚ ", "Ingwaz ᛜ ", "Dagaz ᛞ ", "Othala ᛟ "
         ]
         rune_list = "｜".join(all_runes)
         return (
@@ -70,10 +65,6 @@ def search_rune(keyword):
     reply = f"🔎 搜尋結果：{keyword}\n\n"
     for _, row in results.iterrows():
         pos = row["正逆位"] if pd.notna(row["正逆位"]) and row["正逆位"] else "（無正逆位）"
-        image_base = row["符文名稱"].split("（")[0].strip()
-        image_url = f"https://mikeduolee.github.io/fuyu-rune-assets/{image_base}.png"
-
-        reply += f"🖼️ 圖片：{image_url}\n"
         reply += f"🌿 {row['符文名稱']} {pos}\n"
         reply += f"{row['解釋語句']}\n✨ {row['心靈指引']}\n📜 {row['行動建議']}\n\n"
 
