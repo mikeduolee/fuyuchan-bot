@@ -45,6 +45,50 @@ def search_rune(keyword):
 
     if keyword == "":
         all_runes = [
+            "Fehu ᚠ", "Uruz ᚢ", "Thurisaz ᚦ", "Ansuz ᚨ", "Raido ᚱ", "Kenaz ᚲ", "Gebo ᚷ", "Wunjo ᚹ",
+            "Hagalaz ᚺ", "Nauthiz ᚾ", "Isa ᛁ", "Jera ᛃ", "Eihwaz ᛇ", "Perthro ᛈ", "Algiz ᛉ", "Sowilo ᛋ",
+            "Tiwaz ᛏ", "Berkano ᛒ", "Ehwaz ᛖ", "Mannaz ᛗ", "Laguz ᛚ", "Ingwaz ᛜ", "Dagaz ᛞ", "Othala ᛟ"
+        ]
+        rune_list = "｜".join(all_runes)
+        return (
+            "📜 可查詢的符文如下：
+"
+            f"{rune_list}
+
+"
+            "請輸入：查符文 + 名稱，例如「查符文 Gebo」"
+        )
+
+    df = load_rune_data()
+    results = df[df["符文名稱"].str.contains(keyword, case=False, na=False)]
+
+    if results.empty:
+        return f"🔍 沒有找到與「{keyword}」相關的符文喔～試著檢查拼字或換個詞搜尋吧。"
+
+    reply = f"🔎 搜尋結果：{keyword}
+
+"
+    for _, row in results.iterrows():
+        pos = row["正逆位"] if pd.notna(row["正逆位"]) and row["正逆位"] else "（無正逆位）"
+        image_base = row["符文名稱"].split("（")[0].strip()
+        image_url = f"https://mikeduolee.github.io/fuyu-rune-assets/{image_base}.png"
+
+        reply += f"🖼️ 圖片：{image_url}
+"
+        reply += f"🌿 {row['符文名稱']} {pos}
+"
+        reply += f"{row['解釋語句']}
+✨ {row['心靈指引']}
+📜 {row['行動建議']}
+
+"
+
+    return reply.strip()
+
+    keyword = keyword.strip()
+
+    if keyword == "":
+        all_runes = [
             "Fehu ᚠ ", "Uruz ᚢ ", "Thurisaz ᚦ ", "Ansuz ᚨ ", "Raido ᚱ ", "Kenaz ᚲ ", "Gebo ᚷ ", "Wunjo ᚹ ",
             "Hagalaz ᚺ ", "Nauthiz ᚾ ", "Isa ᛁ ", "Jera ᛃ ", "Eihwaz ᛇ ", "Perthro ᛈ ", "Algiz ᛉ ", "Sowilo ᛋ ",
             "Tiwaz ᛏ ", "Berkano ᛒ ", "Ehwaz ᛖ ", "Mannaz ᛗ ", "Laguz ᛚ ", "Ingwaz ᛜ ", "Dagaz ᛞ ", "Othala ᛟ "
