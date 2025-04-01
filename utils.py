@@ -50,12 +50,9 @@ def search_rune(keyword):
             "Tiwaz ᛏ", "Berkano ᛒ", "Ehwaz ᛖ", "Mannaz ᛗ", "Laguz ᛚ", "Ingwaz ᛜ", "Dagaz ᛞ", "Othala ᛟ"
         ]
         rune_list = "｜".join(all_runes)
-        return (
-            "📜 可查詢的符文如下：
-"
-            f"{rune_list}
-
-"
+       return (
+            "📜 可查詢的符文如下：\n"
+            f"{rune_list}\n\n"
             "請輸入：查符文 + 名稱，例如「查符文 Gebo」"
         )
 
