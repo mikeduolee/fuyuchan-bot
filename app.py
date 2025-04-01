@@ -1,7 +1,7 @@
 from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
-from linebot.models import MessageEvent, TextMessage, TextSendMessage
+from linebot.models import MessageEvent, TextMessage, TextSendMessage, ImageSendMessage
 from dotenv import load_dotenv
 import os
 import random
@@ -78,7 +78,32 @@ def handle_message(event):
         reply = get_question_intro(msg)
     elif msg.startswith("查符文"):
         keyword = msg.replace("查符文", "").strip()
-        reply = search_rune(keyword)  # 無論有無 keyword 都交由 utils 處理
+        result = search_rune(keyword)
+
+        if "🖼️ 圖片：" in result:
+            parts = result.split("🖼️ 圖片：")
+            description = parts[0].strip()
+            image_url = parts[1].split("
+")[0].strip()
+            extra_text = "
+".join(parts[1].split("
+")[1:]).strip()
+
+            line_bot_api.reply_message(
+                event.reply_token,
+                [
+                    TextSendMessage(text=f"{description}
+
+{extra_text}"),
+                    ImageSendMessage(
+                        original_content_url=image_url,
+                        preview_image_url=image_url
+                    )
+                ]
+            )
+            return
+        else:
+            reply = result  # 無論有無 keyword 都交由 utils 處理
     else:
         reply = (
             "🔮 符語娘悄悄說：\n\n"
