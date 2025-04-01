@@ -80,14 +80,11 @@ def handle_message(event):
         keyword = msg.replace("查符文", "").strip()
         result = search_rune(keyword)
 
-        if "🖼️ 圖片：" in result:
-            parts = result.split("🖼️ 圖片：")
-            description = parts[0].strip()
-            image_url = parts[1].split("
-")[0].strip()
-            extra_text = "
-".join(parts[1].split("
-")[1:]).strip()
+       if "🖼️ 圖片：" in result:
+        parts = result.split("🖼️ 圖片：")
+        description = parts[0].strip()
+        image_url = parts[1].split("\n")[0].strip()
+        extra_text = "\n".join(parts[1].split("\n")[1:]).strip()
 
             line_bot_api.reply_message(
                 event.reply_token,
