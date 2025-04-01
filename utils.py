@@ -64,7 +64,7 @@ def search_rune(keyword):
 
     reply = f"🔎 搜尋結果：{keyword}\n\n"
     for _, row in results.iterrows():
-        pos = row["正逆位"] if pd.notna(row["正逆位"]) and row["正逆位"] else ""
+        pos = row["正逆位"] if pd.notna(row["正逆位"]) and row["正逆位"] else "（無正逆位）"
         reply += f"🌿 {row['符文名稱']} {pos}\n"
         reply += f"{row['解釋語句']}\n✨ {row['心靈指引']}\n📜 {row['行動建議']}\n\n"
 
