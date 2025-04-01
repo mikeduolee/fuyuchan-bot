@@ -45,9 +45,9 @@ def search_rune(keyword):
 
     if keyword == "":
         all_runes = [
-            "Fehu", "Uruz", "Thurisaz", "Ansuz", "Raidho", "Kenaz", "Gebo", "Wunjo",
-            "Hagalaz", "Nauthiz", "Isa", "Jera", "Eihwaz", "Perthro", "Algiz", "Sowilo",
-            "Tiwaz", "Berkano", "Ehwaz", "Mannaz", "Laguz", "Ingwaz", "Dagaz", "Othala"
+            "Fehu ᚠ ", "Uruz ᚢ ", "Thurisaz ᚦ ", "Ansuz ᚨ ", "Raido ᚱ ", "Kenaz ᚲ ", "Gebo ᚷ ", "Wunjo ᚹ ",
+            "Hagalaz ᚺ ", "Nauthiz ᚾ ", "Isa ᛁ ", "Jera ᛃ ", "Eihwaz ᛇ ", "Perthro ᛈ ", "Algiz ᛉ ", "Sowilo ᛋ ",
+            "Tiwaz ᛏ ", "Berkano ᛒ ", "Ehwaz ᛖ ", "Mannaz ᛗ ", "Laguz ᛚ ", "Ingwaz ᛜ ", "Dagaz ᛞ ", "Othala ᛟ "
         ]
         rune_list = "｜".join(all_runes)
         return (
