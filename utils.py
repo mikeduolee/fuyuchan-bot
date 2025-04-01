@@ -31,8 +31,13 @@ def get_daily_rune():
         result = df[df["符文名稱"] == rune_name]  # 取正位資料
 
     row = result.iloc[0]
-    text = f"🔮 {rune_name} {position if position else ''}\n\n"
-    text += f"{row['解釋語句']}\n\n✨ {row['心靈指引']}\n📜 {row['行動建議']}"
+    text = f"🔮 {rune_name} {position if position else ''}
+
+"
+    text += f"{row['解釋語句']}
+
+✨ {row['心靈指引']}
+📜 {row['行動建議']}"
     
     if no_reverse:
         text += "\n\n⚠️ 此符文無正逆位之分，已以正位解讀。"
