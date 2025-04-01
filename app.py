@@ -105,11 +105,8 @@ def handle_message(event):
         if "🖼️ 圖片：" in result:
             parts = result.split("🖼️ 圖片：")
             description = parts[0].strip()
-            image_url = parts[1].split("
-")[0].strip()
-            extra_text = "
-".join(parts[1].split("
-")[1:]).strip()
+            image_url = parts[1].split("")[0].strip()
+            extra_text = "".join(parts[1].split("")[1:]).strip()
 
             line_bot_api.reply_message(
                 event.reply_token,
